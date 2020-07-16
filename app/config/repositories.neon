@@ -1,0 +1,6 @@
+services:
+	sportRepository: App\Model\SportRepository
+	participantsRepository:
+		class: App\Model\ParticipantRepository
+		setup:
+			- setTempDir(%tempDir%)

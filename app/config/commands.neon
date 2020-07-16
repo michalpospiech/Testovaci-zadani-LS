@@ -1,0 +1,12 @@
+services:
+    installDatabaseCommand:
+        class: App\Console\InstallDatabaseCommand
+        tags: [kdyby.console.command]
+
+    importCommand:
+        class: App\Console\ImportCommand
+        tags: [kdyby.console.command]
+
+    exportCommand:
+        class: App\Console\ExportCommand
+        tags: [kdyby.console.command]
