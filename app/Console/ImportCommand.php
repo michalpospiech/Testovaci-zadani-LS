@@ -7,9 +7,12 @@ namespace App\Console;
 use App\Libs\Csv;
 use App\Model\ParticipantRepository;
 use App\Model\SportRepository;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ImportCommand extends BaseCommand
 {
@@ -51,8 +54,16 @@ class ImportCommand extends BaseCommand
 			$this->participantRepository->addParticipantsByNormalizedData($participants);
 
 			return 0;
+		} catch (\PDOException $exception) {
+			Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
+
+			if ($exception->getCode() === '42S02') {
+				$output->write('Neexistujici tabulka v databazi. Provedte instalaci prikazem `$ php www/index.php app:install-database`', true);
+			}
+
+			return 2;
 		} catch (\Exception $exception) {
-			$output->writeln($exception->getMessage());
+			Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
 			return 1;
 		}
 	}

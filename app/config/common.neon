@@ -17,6 +17,7 @@ session:
 
 services:
 	router: App\Router\RouterFactory::createRouter
+	tracy.logger: App\Libs\StdLogger
 
 	installCommand:
 		class: App\Console\InstallCommand

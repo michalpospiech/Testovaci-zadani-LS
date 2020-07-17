@@ -7,6 +7,8 @@ namespace App\Console;
 use App\Model\ParticipantRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ExportCommand extends BaseCommand
 {
@@ -41,7 +43,7 @@ class ExportCommand extends BaseCommand
 
 			return 0;
 		} catch (\Exception $exception) {
-			$output->writeln($exception->getMessage());
+			Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
 			return 1;
 		}
 	}

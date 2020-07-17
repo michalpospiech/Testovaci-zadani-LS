@@ -43,7 +43,7 @@ class InstallCommand extends BaseCommand
 
 			return 0;
 		} catch (\Exception $exception) {
-			$output->writeln($exception->getMessage());
+			Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
 			return 1;
 		}
 	}

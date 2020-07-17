@@ -12,6 +12,8 @@ use Nette\Database\ResultSet;
 use Nette\Database\Table\Selection;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class ParticipantRepository extends Repository
 {
@@ -47,7 +49,6 @@ class ParticipantRepository extends Repository
 	 * @param string $nameKey
 	 * @param bool $useCache
 	 * @return array
-	 * @throws \Throwable
 	 */
 	public function getDataByNameKey($nameKey, $useCache = true): array
 	{
@@ -58,10 +59,15 @@ class ParticipantRepository extends Repository
 		}
 
 		$data = $this->getTable()->where('name_key', $nameKey)->fetchPairs('id', 'name');
-		$this->cache->save($cacheKey, $data, [
-			Cache::EXPIRE => '1 hour',
-			Cache::TAGS => ['nameKey', "nameKey/$nameKey"]
-		]);
+
+		try {
+			$this->cache->save($cacheKey, $data, [
+				Cache::EXPIRE => '1 hour',
+				Cache::TAGS => ['nameKey', "nameKey/$nameKey"]
+			]);
+		} catch (\Throwable $exception) {
+			Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
+		}
 
 		return $data;
 	}
@@ -72,7 +78,6 @@ class ParticipantRepository extends Repository
 	 * @param string $name
 	 * @param bool $useCache
 	 * @return int|null
-	 * @throws \Throwable
 	 */
 	public function getIdByName($name, $useCache = true): ?int
 	{
@@ -109,6 +114,7 @@ class ParticipantRepository extends Repository
 	 * Zalozi data v databazi na zaklade znormalizovanych dat
 	 *
 	 * @param array $data
+	 * @throws \Exception
 	 */
 	public function addParticipantsByNormalizedData(array $data): void
 	{
@@ -130,7 +136,7 @@ class ParticipantRepository extends Repository
 			FileSystem::delete($this->tempDir . '/' . self::CSV_PARTICIPANTS);
 			FileSystem::delete($this->tempDir . '/' . self::CSV_PARTICIPANTS_SPORTS);
 		} catch (\Exception $exception) {
-			throw new $exception;
+			throw $exception;
 		}
 	}
 
