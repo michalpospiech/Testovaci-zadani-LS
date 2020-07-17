@@ -18,10 +18,8 @@ class Csv
 		return $file;
 	}
 
-	public static function normalizeData(\SplFileInfo $fileInfo, $key = 'id', $idByAutoIncrement = null): array
+	public static function normalizeData(\SplFileInfo $fileInfo, $key = 'id'): array
 	{
-		$idAIKey = $key === 'id' ? 'id_ai' : 'id';
-
 		$file = $fileInfo->openFile();
 		$file->setFlags(\SplFileObject::READ_CSV);
 
@@ -38,11 +36,6 @@ class Csv
 				$key => $row[$cols[$key]],
 				'name' => $row[$cols['name']]
 			];
-
-			if (is_int($idByAutoIncrement)) {
-				$vals[$idAIKey] = $idByAutoIncrement;
-				$idByAutoIncrement++;
-			}
 
 			$values[] = $vals;
 		}
