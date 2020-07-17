@@ -128,6 +128,11 @@ class ParticipantRepository extends Repository
 			$this->addParticipantsFromCsv($participantsDataFile);
 
 			$participantsSportsTableData = array_map(function ($v) {
+				$participantId = $this->getIdByName($v['name']);
+				if (!$participantId) {
+					return false;
+				}
+
 				return [$this->getIdByName($v['name']), $v['sport_id']];
 			}, $data);
 			$participantsSportsFile = Csv::createFile($this->tempDir . '/' . self::CSV_PARTICIPANTS_SPORTS, $participantsSportsTableData);
