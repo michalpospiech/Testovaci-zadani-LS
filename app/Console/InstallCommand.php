@@ -4,11 +4,14 @@
 namespace App\Console;
 
 
+use Nette\Database\Connection;
 use Nette\Neon\Neon;
 use Nette\Utils\FileSystem;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Tracy\Debugger;
+use Tracy\ILogger;
 
 class InstallCommand extends BaseCommand
 {
@@ -28,17 +31,17 @@ class InstallCommand extends BaseCommand
 			$user = $question->ask($input, $output, (new Question('MySQL username:')));
 			$pass = $question->ask($input, $output, (new Question('MySQL password:')));
 
-			FileSystem::write(__DIR__ . '/../config/local.neon', Neon::encode([
-				'database' => [
-					'dsn' => "mysql:host=$host;dbname=$database",
-					'user' => $user,
-					'password' => $pass,
-					'options' => [
-						'PDO::MYSQL_ATTR_LOCAL_INFILE' => true
-					]
+			$mysqlData = [
+				'dsn' => "mysql:host=$host;dbname=$database",
+				'user' => $user,
+				'password' => $pass,
+				'options' => [
+					'PDO::MYSQL_ATTR_LOCAL_INFILE' => true
 				]
-			], Neon::BLOCK));
+			];
+			new Connection($mysqlData['dsn'], $mysqlData['user'], $mysqlData['password'], $mysqlData['options']);
 
+			FileSystem::write(__DIR__ . '/../config/local.neon', Neon::encode(['database' => $mysqlData], Neon::BLOCK));
 			FileSystem::createDir(__DIR__ . '/../../output');
 
 			return 0;
