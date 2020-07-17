@@ -4,6 +4,11 @@
 namespace App\Libs;
 
 
+use Nette\Utils\AssertionException;
+use Nette\Utils\Validators;
+use Tracy\Debugger;
+use Tracy\ILogger;
+
 class Csv
 {
 
@@ -32,12 +37,18 @@ class Csv
 				continue;
 			}
 
-			$vals = [
-				$key => $row[$cols[$key]],
-				'name' => $row[$cols['name']]
-			];
+			try {
+				Validators::assertField($row, $cols[$key], 'numericint');
 
-			$values[] = $vals;
+				$vals = [
+					$key => $row[$cols[$key]],
+					'name' => $row[$cols['name']]
+				];
+
+				$values[] = $vals;
+			} catch (AssertionException $exception) {
+				Debugger::log($exception->getMessage(), ILogger::EXCEPTION);
+			}
 		}
 
 		return $values;
