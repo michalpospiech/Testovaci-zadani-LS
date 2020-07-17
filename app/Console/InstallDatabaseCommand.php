@@ -6,11 +6,10 @@ namespace App\Console;
 
 use Nette\Database\Context;
 use Nette\Utils\FileSystem;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallDatabaseCommand extends Command
+class InstallDatabaseCommand extends BaseCommand
 {
 
 	/** @var Context */
