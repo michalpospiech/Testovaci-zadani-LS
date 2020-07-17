@@ -6,8 +6,11 @@ Aplikace byla zpracována výhradně jako testovací práce určena pro výběro
 **Pro správné fungování je aplikaci nutné spustit v PHP min. verzi 7.2.**
 
 Již v instalačním procesu aplikace předpokládá, že má plný přístup ke všem souborům/adresářům s
-právem zápisu. Jestliže tomu tak není, tak je zapotřebí pro celý adresář, ve kterém je stažený
-repozitář, tyto práva povolit.
+právem zápisu. Jestliže tomu tak není, tak je zapotřebí povolit zápis do následujících adresářů:
+- `./app/config`
+- `./log`
+- `./output`
+- `./temp`
 
 Instalace
 ------------
